@@ -5,4 +5,4 @@
 # url: https://github.com/suttacentral/suttacentral-discourse-plugin
 
 register_asset "javascripts/suttacentral.js"
-register_asset "stylesheets/suttacentral.css"
+register_asset "stylesheets/suttacentral.scss"

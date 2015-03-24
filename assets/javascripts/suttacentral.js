@@ -1,92 +1,7 @@
-//(function($) {
-
-  //var isIE = /*@cc_on!@*/false || document.documentMode,
-      //globalIdCounter = 0;
-
-  //var blurText = function($spoiler, radius) {
-    //var textShadow = "gray 0 0 " + radius + "px";
-    //if (isIE) { textShadow = radius <= 0 ? "0 0 0 0 gray" : "0 0 " + radius + "px .1px gray"; }
-
-    //$spoiler.css("background-color", "transparent")
-            //.css("color", "rgba(0, 0, 0, 0)")
-            //.css("text-shadow", textShadow);
-  //};
-
-  //var blurImage = function($spoiler, radius) {
-    //// on the first pass, transform images into SVG
-    //$("img", $spoiler).each(function(index, image) {
-      //var transform = function() {
-        //var w = image.width,
-            //h = image.height,
-            //id = ++globalIdCounter;
-        //var svg = "<svg data-spoiler-id='" + id + "' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='" + w + "' height='" + h + "'>" +
-                  //"<defs><filter id='blur-" + id + "'><feGaussianBlur id='gaussian-" + id + "' stdDeviation='" + radius + "'></feGaussianBlur></filter></defs>" +
-                  //"<image xlink:href='" + image.src + "' filter='url(#blur-" + id + ")' width='" + w + "' height='" + h + "'></image>" +
-                  //"</svg>";
-        //$(image).replaceWith(svg);
-      //};
-      //// do we need to wait for the image to load?
-      //if (image.naturalWidth === 0 || image.naturalHeight === 0) {
-        //image.onload = transform;
-      //} else {
-        //transform();
-      //}
-    //});
-
-    //// change the blur radius
-    //$("svg", $spoiler).each(function(index, svg) {
-      //var id = svg.getAttribute("data-spoiler-id");
-      //svg.getElementById("gaussian-" + id).setAttribute("stdDeviation", radius);
-    //});
-  //};
-
-  //var applySpoilers = function($spoiler, options, applyBlur) {
-    //var maxBlur = options.max,
-        //partialBlur = options.partial;
-
-    //$spoiler.data("spoiler-state", "blurred");
-
-    //applyBlur($spoiler, maxBlur);
-
-    //$spoiler.on("mouseover", function() {
-      //$spoiler.css("cursor", "pointer");
-      //if ($spoiler.data("spoiler-state") === "blurred") { applyBlur($spoiler, partialBlur); }
-    //}).on("mouseout", function() {
-      //if ($spoiler.data("spoiler-state") === "blurred") { applyBlur($spoiler, maxBlur); }
-    //}).on("click", function(e) {
-      //if ($spoiler.data("spoiler-state") === "blurred") {
-        //$spoiler.data("spoiler-state", "revealed").css("cursor", "auto");
-        //applyBlur($spoiler, 0);
-      //} else {
-        //$spoiler.data("spoiler-state", "blurred").css("cursor", "pointer");
-        //applyBlur($spoiler, partialBlur);
-      //}
-      //e.preventDefault();
-    //});
-
-  //};
-
-  //$.fn.spoilText = function(options) {
-    //var defaults = { max: 10, partial: 5 },
-        //opts = $.extend(defaults, options || {});
-
-    //return this.each(function() {
-      //applySpoilers($(this), opts, blurText);
-    //});
-  //};
-
-  //$.fn.spoilImage = function(options) {
-    //var defaults = { max: 20, partial: 6 },
-        //opts = $.extend(defaults, options || {});
-
-    //return this.each(function() {
-      //applySpoilers($(this), opts, blurImage);
-    //});
-  //};
-
-//})(jQuery);
-
 (function($){
+    "use strict";
+    var SCBaseUrl = 'http://localhost'
+
     var validUidPrefixes = _([
          'an', 'bv', 'cp', 'da', 'dn', 'dq', 'ds', 'dt', 'ea', 'gf',
          'it', 'ja', 'kf', 'kn', 'kp', 'kv', 'ma', 'mn', 'ne', 'oa',
@@ -145,10 +60,10 @@
                                 if (lang) {
                                     lang = lang.toLowerCase();
                                     if (lang in validLangs) {
-                                        return '<a target="_blank" class="sc-uid" href="http://suttacentral.net/' + lang + '/' + uid + '">' + m + '</a>'
+                                        return '<span class="sc-uid" data-lang="'+lang+'" data-uid="'+uid+'">' + m + '</span>'
                                     }
                                 } else {
-                                    return '<a target="_blank" class="sc-uid" href="http://suttacentral.net/' + uid + '">' + m + '</a>'
+                                    return '<span class="sc-uid" data-uid="'+uid+'">' + m + '</span>'
                                 }
                             }
                         }
@@ -166,11 +81,69 @@
             }
         });
     }
+    function showSuttaInfo(e) {
+        function showPopup(popup) {
+            var docWidth = $('article.boxed').width();
+            $link.parents('article.boxed').append(popup);
+            var offset = $link.offset(),
+                popupWidth = popup.width();
+            offset.top -= popup.outerHeight();
+            if (offset.left + popupWidth > docWidth) {
+                offset.left = docWidth * 1.05 - popupWidth;
+            }
+            popup.offset(offset);
+            
+            $(document.body).on('click.sc.popop', function(e){
+                if ($(e.currentTarget).parents('.sc-popup').length > 0) {
+                    return
+                }
+                popup.remove();
+                $(document.body).off('click.sc.popop');
+                return
+            }) 
+        }
+        function createPopup(data, code, jqXHR){
+            var popup = $('<div class="sc-popup"/>').html(data);
+            showPopup(popup);            
+        }
+        
+        var $link = $(e.currentTarget),
+            href = $(e).attr('href'),
+            lang = $link.attr('data-lang') || 'en',
+            uid = $link.attr('data-uid');
+
+        if ($link.data('sc-jqXHR')) {
+            // debounce;
+            return
+        }
+
+        var href = SCBaseUrl + '/sutta_info/' + uid + '?' + $.param({'lang': lang});
+        var jqXHR = jQuery.ajax(href)
+                            .success(createPopup)
+                            .error(function(){$link.removeClass('sc-uid')})
+                            .always(function(){$link.data('sc-jqXHR', null)});
+        $link.data('sc-jqXHR', jqXHR);
+    }
     $.fn.scUids = function(options) {
         var defaults = {},
-        opts = $.extend(defaults, options || {});
+            opts = $.extend(defaults, options || {});
         return this.each(function() {
             markupUids($(this), opts);
-        });
+        }).on('click', '.sc-uid', showSuttaInfo)
     };
 })(jQuery);
+
+///* Very Nasty Hack to stop Discourse Click Tracking messing with us */
+//(function(){
+    //var savedFn = Discourse.ClickTrack.trackClick;
+    
+    //Discourse.ClickTrack.trackClick = function(e){
+        //if ($(e.currentTarget).hasClass('sc-auto-link')) {
+            //return
+        //}
+        //// Let discourse do it's normal thing.
+        //savedFn(e);
+    //}
+
+
+//})();

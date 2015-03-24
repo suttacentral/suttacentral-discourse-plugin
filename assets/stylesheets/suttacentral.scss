@@ -1,0 +1,38 @@
+.sc-uid {
+    border-bottom: 1px dotted #55d;
+}
+
+.sc-popup {
+    position: absolute;
+    padding: 0.5em;
+    max-width: 90%;
+    font-size: 90%;
+    background-color: white;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+    z-index: 901;
+    > sutta-info {
+        /* shrink wrap trick */
+    }
+
+    .sc-extra-sutta-info {
+        float: left;
+        color: #666;
+        margin-left: 0.5em;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        margin-left: 1em;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    .sc-head {
+        font-weight: bold;
+        font-size: 110%;
+    }
+}
