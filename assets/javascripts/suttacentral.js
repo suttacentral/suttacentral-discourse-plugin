@@ -1,6 +1,6 @@
 (function($){
     "use strict";
-    var SCBaseUrl = 'http://localhost'
+    var SCBaseUrl = 'http://suttacentral.net'
 
     var validUidPrefixes = _([
          'an', 'bv', 'cp', 'da', 'dn', 'dq', 'ds', 'dt', 'ea', 'gf',
