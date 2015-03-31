@@ -1,6 +1,12 @@
 (function($){
     "use strict";
-    var SCBaseUrl = 'http://suttacentral.net'
+    
+    var SCBaseUrl = 'http://suttacentral.net';
+    if (window.location.origin.match(/^http:\/\/localhost/)) {
+        SCBaseUrl = 'http://localhost'
+    }
+    
+    
 
     var validUidPrefixes = _([
          'an', 'bv', 'cp', 'da', 'dn', 'dq', 'ds', 'dt', 'ea', 'gf',
@@ -81,9 +87,10 @@
             }
         });
     }
-    function showSuttaInfo(e) {
-        function showPopup(popup) {
-            var docWidth = $('article.boxed').width();
+    function showSuttaInfo($link, preload) {
+        function showPopup(popupData) {
+            var popup = $('<div class="sc-popup"/>').html(popupData),
+                docWidth = $('article.boxed').width();
             $link.parents('article.boxed').append(popup);
             var offset = $link.offset(),
                 popupWidth = popup.width();
@@ -93,57 +100,65 @@
             }
             popup.offset(offset);
             
-            $(document.body).on('click.sc.popop', function(e){
-                if ($(e.currentTarget).parents('.sc-popup').length > 0) {
+            console.log($link, popupData, popup[0]);
+            Ember.run.next(null, function(){
+                $(document.body).on('click.sc.popop', function(e){
+                    if ($(e.target).parents('.sc-popup').length > 0) {
+                        return
+                    }
+                    popup.remove();
+                    $(document.body).off('click.sc.popop');
                     return
-                }
-                popup.remove();
-                $(document.body).off('click.sc.popop');
-                return
-            }) 
+                })
+            })
+
         }
         function createPopup(data, code, jqXHR){
-            var popup = $('<div class="sc-popup"/>').html(data);
-            showPopup(popup);            
+            $link.data('sc.popup.data', data)
+            if (!preload) {
+                showPopup(data);
+            }
         }
         
-        var $link = $(e.currentTarget),
-            href = $(e).attr('href'),
-            lang = $link.attr('data-lang') || 'en',
+        if (preload) {
+            console.log('Preloading', [$link]);
+        } else {
+            console.log('Showing', [$link]);
+        }
+        
+        var lang = $link.attr('data-lang') || 'en',
             uid = $link.attr('data-uid');
+            
+        if ($link.data('sc.popup.data')) {
+            console.log('From existing data');
+            showPopup($link.data('sc.popup.data'));
+            return
+        }
 
-        if ($link.data('sc-jqXHR')) {
+        if ($link.data('sc.popup.jqXHR')) {
             // debounce;
             return
         }
 
         var href = SCBaseUrl + '/sutta_info/' + uid + '?' + $.param({'lang': lang});
-        var jqXHR = jQuery.ajax(href)
+        var jqXHR = jQuery.ajax(href, {'cache': false})
                             .success(createPopup)
                             .error(function(){$link.removeClass('sc-uid')})
                             .always(function(){$link.data('sc-jqXHR', null)});
-        $link.data('sc-jqXHR', jqXHR);
+        $link.data('sc.popup.jqXHR', true);
     }
     $.fn.scUids = function(options) {
         var defaults = {},
-            opts = $.extend(defaults, options || {});
-        return this.each(function() {
+            opts = $.extend(defaults, options || {}),
+            result;
+            
+        result = this.each(function() {
             markupUids($(this), opts);
-        }).on('click', '.sc-uid', showSuttaInfo)
-    };
+        }).on('click', '.sc-uid', function(e){showSuttaInfo($(e.currentTarget))});
+        
+        $('.sc-uid').each(function(){
+            showSuttaInfo($(this), true);            
+        })
+        return result
+    }
 })(jQuery);
-
-///* Very Nasty Hack to stop Discourse Click Tracking messing with us */
-//(function(){
-    //var savedFn = Discourse.ClickTrack.trackClick;
-    
-    //Discourse.ClickTrack.trackClick = function(e){
-        //if ($(e.currentTarget).hasClass('sc-auto-link')) {
-            //return
-        //}
-        //// Let discourse do it's normal thing.
-        //savedFn(e);
-    //}
-
-
-//})();
