@@ -18,7 +18,7 @@ export default {
                     buttonRow.append($('<div class="wmd-spacer" id="wmd-spacer2"></div>'))
                              .append(button);
 
-                    var charGroups =[['sc-pali-char', 'Pāli', ['ā', 'ī', 'ū', 'ṁ', 'ṅ', 'ñ', 'ṭ',
+                    var charGroups =[['sc-pali-char', 'Pāli and Sanskrit', ['ā', 'ī', 'ū', 'ṁ', 'ṅ', 'ñ', 'ṭ',
                              'ḍ', 'ṇ', 'ḷ']],
                              ['sc-skt-char', 'Sanskrit', ['ṛ', 'ṝ', 'ḷ', 'ḹ', 'ḥ', 'ś', 'ṣ']],
                              ['sc-pali-input-caps', 'Toggle Case', ['⇪']]];
