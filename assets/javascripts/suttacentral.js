@@ -129,7 +129,7 @@
         var lang = $link.attr('data-lang') || 'en',
             uid = $link.attr('data-uid');
             
-        if ($link.data('sc.popup.data')) {
+        if (!preload && $link.data('sc.popup.data')) {
             console.log('From existing data');
             showPopup($link.data('sc.popup.data'));
             return
@@ -154,7 +154,9 @@
             
         result = this.each(function() {
             markupUids($(this), opts);
-        }).on('click', '.sc-uid', function(e){showSuttaInfo($(e.currentTarget))});
+        }).on('click', '.sc-uid', function(e){
+            console.log('Event:', e);
+            showSuttaInfo($(e.currentTarget))});
         
         $('.sc-uid').each(function(){
             showSuttaInfo($(this), true);            

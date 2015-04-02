@@ -18,8 +18,10 @@ export default {
                     buttonRow.append($('<div class="wmd-spacer" id="wmd-spacer2"></div>'))
                              .append(button);
 
-                    var chars = ['ā', 'ī', 'ū', 'ṁ', 'ṅ', 'ñ', 'ṭ',
-                             'ḍ', 'ṇ', 'ḷ'];
+                    var charGroups =[['sc-pali-char', 'Pāli', ['ā', 'ī', 'ū', 'ṁ', 'ṅ', 'ñ', 'ṭ',
+                             'ḍ', 'ṇ', 'ḷ']],
+                             ['sc-skt-char', 'Sanskrit', ['ṛ', 'ṝ', 'ḷ', 'ḹ', 'ḥ', 'ś', 'ṣ']],
+                             ['sc-pali-input-caps', 'Toggle Case', ['⇪']]];
                     
                     var charTable = $('<div id="sc-pali-char-table"/>')
                                     .appendTo(button)
@@ -27,17 +29,23 @@ export default {
                         innerWrap = $('<div id="sc-pali-char-table-inner-wrap"/>')
                                     .appendTo(charTable),
                         charButton = $('<button class="sc-pali-input-char"/>');
-                    for (let cLower of chars) {
-                        innerWrap.append(charButton.clone().text(cLower));
+                    for (let charGroup of charGroups) {
+                        let klass = charGroup[0],
+                            title = charGroup[1],
+                            chars = charGroup[2];
+                        
+                        for (let cLower of chars) {
+                            var btn = charButton.clone()
+                                                .text(cLower)
+                                                .addClass(klass)
+                                                .attr('title', title);
+                            if (cLower == ' ') {
+                                btn.addClass('sc-pali-input-blank')
+                                   .attr('disabled', 'disabled');
+                            }
+                            innerWrap.append(btn);
+                        }
                     }
-                    
-                    innerWrap.append(charButton.clone()
-                                         .addClass('sc-pali-input-blank')
-                                         .attr('disabled', 'disabled')
-                                         .text(' '))
-                    innerWrap.append(charButton.clone()
-                                         .addClass('sc-pali-input-caps')
-                                         .text('⇪'))
                     
                     button.on('click', function(e) {
                         var target = $(e.target),
