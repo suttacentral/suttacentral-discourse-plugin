@@ -29,12 +29,12 @@ export default {
                         innerWrap = $('<div id="sc-pali-char-table-inner-wrap"/>')
                                     .appendTo(charTable),
                         charButton = $('<button class="sc-pali-input-char"/>');
-                    for (let charGroup of charGroups) {
-                        let klass = charGroup[0],
+                    charGroups.forEach(function(charGroup) {
+                        var klass = charGroup[0],
                             title = charGroup[1],
                             chars = charGroup[2];
                         
-                        for (let cLower of chars) {
+                        chars.forEach(function(cLower) {
                             var btn = charButton.clone()
                                                 .text(cLower)
                                                 .addClass(klass)
@@ -44,8 +44,8 @@ export default {
                                    .attr('disabled', 'disabled');
                             }
                             innerWrap.append(btn);
-                        }
-                    }
+                        });
+                    });
                     
                     button.on('click', function(e) {
                         var target = $(e.target),
