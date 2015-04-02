@@ -6,6 +6,7 @@ export default {
     let Composer = container.lookupFactory('model:composer');
     Composer.reopen({
             open(opts) {
+                this._super(opts);
                 console.log('Open!', $('#wmd-button-bar'))
                 Ember.run.next(null, function(){
                     var option = $('<li/>'),
