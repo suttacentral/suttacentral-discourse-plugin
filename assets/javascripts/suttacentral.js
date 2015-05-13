@@ -1,13 +1,5 @@
 (function($){
     "use strict";
-    
-    var SCBaseUrl = 'http://suttacentral.net';
-    if (window.location.origin.match(/^http:\/\/localhost/)) {
-        SCBaseUrl = 'http://localhost'
-    }
-    
-    
-
     var validUidPrefixes = _([
          'an', 'bv', 'cp', 'da', 'dn', 'dq', 'ds', 'dt', 'ea', 'gf',
          'it', 'ja', 'kf', 'kn', 'kp', 'kv', 'ma', 'mn', 'ne', 'oa',
@@ -140,7 +132,7 @@
             return
         }
 
-        var href = SCBaseUrl + '/sutta_info/' + uid + '?' + $.param({'lang': lang});
+        var href = Discourse.SiteSettings.suttacentral_url + '/sutta_info/' + uid + '?' + $.param({'lang': lang});
         var jqXHR = jQuery.ajax(href, {'cache': false})
                             .success(createPopup)
                             .error(function(){$link.removeClass('sc-uid')})

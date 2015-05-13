@@ -1,0 +1,4 @@
+plugins:
+  suttacentral_url:
+    default: 'https://suttacentral.net'
+    client: true

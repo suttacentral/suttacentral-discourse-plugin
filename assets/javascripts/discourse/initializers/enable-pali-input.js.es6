@@ -9,6 +9,9 @@ export default {
                 this._super(opts);
                 console.log('Open!', $('#wmd-button-bar'))
                 Ember.run.next(null, function(){
+                    //If the user clicks 'New Topic' multiple times this
+                    //code can run multiple times.
+                    if ($('.sc-pali-input').length > 0) return
                     var option = $('<li/>'),
                         buttonRow = $('#wmd-button-row'),
                         button = $('<div/>').attr({
@@ -21,7 +24,7 @@ export default {
 
                     var charGroups =[['sc-pali-char', 'Pāli and Sanskrit', ['ā', 'ī', 'ū', 'ṁ', 'ṅ', 'ñ', 'ṭ',
                              'ḍ', 'ṇ', 'ḷ']],
-                             ['sc-skt-char', 'Sanskrit', ['ṛ', 'ṝ', 'ḷ', 'ḹ', 'ḥ', 'ś', 'ṣ']],
+                             ['sc-skt-char', 'Sanskrit', ['ṛ', 'ṝ', 'ḹ', 'ḥ', 'ś', 'ṣ']],
                              ['sc-pali-input-caps', 'Toggle Case', ['⇪']]];
                     
                     var charTable = $('<div id="sc-pali-char-table"/>')
