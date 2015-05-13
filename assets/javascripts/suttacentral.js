@@ -1,5 +1,6 @@
 (function($){
     "use strict";
+    var _cache = {}
     var validUidPrefixes = _([
          'an', 'bv', 'cp', 'da', 'dn', 'dq', 'ds', 'dt', 'ea', 'gf',
          'it', 'ja', 'kf', 'kn', 'kp', 'kv', 'ma', 'mn', 'ne', 'oa',
@@ -111,6 +112,9 @@
                 showPopup(data);
             }
         }
+        function invalidateLink() {
+            $link.removeClass('sc-uid');
+        }
         
         if (preload) {
             console.log('Preloading', [$link]);
@@ -127,17 +131,30 @@
             return
         }
 
-        if ($link.data('sc.popup.jqXHR')) {
-            // debounce;
-            return
+        function retriveData(href, success, error) {
+            var stored = _cache[href];
+            if (stored) {
+                if (stored.success) {
+                    var jqXHR = stored;
+                    jqXHR.success(success);
+                    jqXHR.error(error);
+                    return
+                } else {
+                    var data = stored;
+                    success(data);
+                    return
+                }
+            }
+            
+            var jqXHR = jQuery.ajax(href, {'cache': false})
+                              .success(function(data){ _cache[href] = data })
+                              .success(success)
+                              .error(error);
+            _cache[href] = jqXHR;
         }
 
         var href = Discourse.SiteSettings.suttacentral_url + '/sutta_info/' + uid + '?' + $.param({'lang': lang});
-        var jqXHR = jQuery.ajax(href, {'cache': false})
-                            .success(createPopup)
-                            .error(function(){$link.removeClass('sc-uid')})
-                            .always(function(){$link.data('sc-jqXHR', null)});
-        $link.data('sc.popup.jqXHR', true);
+        retriveData(href, createPopup, invalidateLink)
     }
     $.fn.scUids = function(options) {
         var defaults = {},
