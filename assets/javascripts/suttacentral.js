@@ -3,8 +3,8 @@
     var _cache = {}
     var validUidPrefixes = _([
          'an', 'bv', 'cp', 'da', 'dn', 'dq', 'ds', 'dt', 'ea', 'gf',
-         'it', 'ja', 'kf', 'kn', 'kp', 'kv', 'ma', 'mn', 'ne', 'oa',
-         'ot', 'pe', 'pf', 'pp', 'ps', 'pt', 'pv', 'sa', 'sf', 'sn',
+         'iti', 'ja', 'kf', 'kn', 'kp', 'kv', 'ma', 'mn', 'ne', 'oa',
+         'ot', 'pe', 'pf', 'pp', 'ps', 'pv', 'sa', 'sf', 'sn',
          'tc', 'ud', 'uf', 'up', 'uv', 'vb', 'vv', 'ya', 'an1', 'an2',
          'an3', 'an4', 'an5', 'an6', 'an7', 'an8', 'an9', 'arv',
          'avs', 'cnd', 'dhp', 'ea1', 'ea2', 'ea3', 'ea4', 'ea5',
@@ -33,7 +33,7 @@
          'sa701', 'sa801', 'sa901', 'sammi', 'sangi', 'sarip',
          'sht10', 'skt-b', 'skt-d', 'skt-j', 'skt-l', 'skt-m',
          'skt-s', 't102-', 't126-', 't150B', 't2-25', 't27-9',
-         'tha-a', 'thi-a', 'vijna'
+         'tha-a', 'thi-a', 'vijna', 'patthana'
         ]).invert().value(),
         validLangs = _(['bo', 'ca', 'cs', 'de', 'en', 'es', 'fr',
                         'gr', 'hi', 'hu', 'id', 'it', 'ko', 'lzh',
@@ -146,7 +146,7 @@
                 }
             }
             
-            var jqXHR = jQuery.ajax(href, {'cache': false})
+            var jqXHR = jQuery.ajax(href, {'cache': false, crossDomain: true})
                               .success(function(data){ _cache[href] = data })
                               .success(success)
                               .error(error);
