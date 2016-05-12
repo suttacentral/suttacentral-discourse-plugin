@@ -1,6 +1,6 @@
 # name: suttacentral
 # about: Creates links to Sutta Central
-# version: 0.01
+# version: 0.1.1
 # author: Blake Walsh
 # url: https://github.com/suttacentral/suttacentral-discourse-plugin
 
