@@ -6,7 +6,7 @@ export default {
   name: "suttacentral",
   initialize() {
     
-    withPluginApi('0.1', api => {
+    withPluginApi('0.4', api => {
       
       api.decorateCooked( $elem => $elem.scUids() );
     })

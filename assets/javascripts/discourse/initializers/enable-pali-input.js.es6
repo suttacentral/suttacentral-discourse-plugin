@@ -1,8 +1,27 @@
 
+import { withPluginApi } from 'discourse/lib/plugin-api';
 
 export default {
   name: "enable-pali-input",
-  initialize: function(container) {
+  initialize() {
+    return
+    withPluginApi('0.4', api => {
+      api.onToolbarCreate( toolbar => {
+        toolbar.addButton({
+          id: 'pop-test',
+          group: 'extras',
+          icon: 'bolt',
+          action: 'makeItPop',
+          title: 'pop_format.title'
+        })
+      });
+      
+      api.decorateWidget('post:after', () => {
+        return "I am displayed after every post";
+      });
+    })
+    console.log('Init pali intput');
+    return
     let Composer = container.lookupFactory('model:composer');
     Composer.reopen({
             open(opts) {
