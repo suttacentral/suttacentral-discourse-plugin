@@ -7,8 +7,7 @@ export default {
   initialize() {
     
     withPluginApi('0.4', api => {
-      
-      api.decorateCooked( $elem => $elem.scUids() );
+      api.decorateCooked( elem => $(elem).scUids() );
     })
   }
 };

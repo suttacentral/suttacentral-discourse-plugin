@@ -1,3 +1,4 @@
+
 (function($){
     "use strict";
     var _cache = {}
@@ -93,7 +94,6 @@
             }
             popup.offset(offset);
             
-            console.log($link, popupData, popup[0]);
             Ember.run.next(null, function(){
                 $(document.body).on('click.sc.popop', function(e){
                     if ($(e.target).parents('.sc-popup').length > 0) {
@@ -116,17 +116,10 @@
             $link.removeClass('sc-uid');
         }
         
-        if (preload) {
-            console.log('Preloading', [$link]);
-        } else {
-            console.log('Showing', [$link]);
-        }
-        
         var lang = $link.attr('data-lang') || 'en',
             uid = $link.attr('data-uid');
             
         if (!preload && $link.data('sc.popup.data')) {
-            console.log('From existing data');
             showPopup($link.data('sc.popup.data'));
             return
         }
@@ -156,7 +149,8 @@
         var href = Discourse.SiteSettings.suttacentral_url + '/sutta_info/' + uid + '?' + $.param({'lang': lang});
         retriveData(href, createPopup, invalidateLink)
     }
-    $.fn.scUids = function(options) {
+    window.suttacentral_$ = $;
+    $.fn.extend({'scUids' : function(options) {
         var defaults = {},
             opts = $.extend(defaults, options || {}),
             result;
@@ -164,12 +158,11 @@
         result = this.each(function() {
             markupUids($(this), opts);
         }).on('click', '.sc-uid', function(e){
-            console.log('Event:', e);
             showSuttaInfo($(e.currentTarget))});
         
         $('.sc-uid').each(function(){
             showSuttaInfo($(this), true);            
         })
         return result
-    }
+    }})
 })(jQuery);
