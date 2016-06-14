@@ -7,7 +7,11 @@ export default {
   initialize() {
     
     withPluginApi('0.4', api => {
-      api.decorateCooked( elem => $(elem).scUids() );
+      try {
+        api.decorateCooked( elem => $(elem).scUids() );
+      } catch (err) {
+        console.log('An error occured when attempting to add sc uids markup ', err);
+      }
     })
   }
 };
