@@ -15,13 +15,7 @@ export default {
           title: 'pop_format.title'
         })
       });
-      
-      api.decorateWidget('post:after', () => {
-        return "I am displayed after every post";
-      });
     })
-    console.log('Init pali intput');
-    return
     let Composer = container.lookupFactory('model:composer');
     Composer.reopen({
             open(opts) {
